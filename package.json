@@ -1,0 +1,14 @@
+{
+	"name": "gotranslateit-fetch",
+	"version": "0.0.1",
+	"private": true,
+	"main": "src",
+	"browser": {
+		"./src/index.js": "./src/browser.js"
+	},
+	"dependencies": {
+		"bluebird": "^2.10.2",
+		"request": "^2.65.0",
+		"qs": "^5.2.0"
+	}
+}
