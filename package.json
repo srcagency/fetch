@@ -1,5 +1,6 @@
 {
 	"name": "gotranslateit-fetch",
+	"repository": "gotranslateit/fetch",
 	"version": "0.0.1",
 	"private": true,
 	"main": "src",
