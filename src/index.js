@@ -29,7 +29,7 @@ function xhr( verb, url, query, headers ){
 		gzip: true,
 		json: true,
 	})
-		.spread(function( httpResponse, body ){
+		.then(function( httpResponse ){
 			var code = httpResponse.statusCode;
 			var statusIdentifier = code && (code / 100 | 0);
 
@@ -39,13 +39,12 @@ function xhr( verb, url, query, headers ){
 				code,
 				httpResponse.statusMessage || 'Connection trouble',
 				httpResponse.headers,
-				body
+				httpResponse.body
 			);
 
 			if (statusIdentifier === 2)
 				return response;
 
 			throw response;
-		})
-		.cancellable();
+		});
 }

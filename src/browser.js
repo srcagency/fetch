@@ -20,7 +20,7 @@ module.exports = xhr;
 var withoutBody = [ 'GET', 'DELETE' ];
 
 function xhr( verb, url, query, headers ){
-	return new Promise(function( rs, rj ){
+	return new Promise(function( rs, rj, onCancel ){
 		var r = new XMLHttpRequest();
 
 		var isWithoutBody = ~withoutBody.indexOf(verb);
@@ -73,13 +73,11 @@ function xhr( verb, url, query, headers ){
 			});
 
 		r.send(!isWithoutBody && query && JSON.stringify(query));
-	})
-		.cancellable()
-		.catch(Promise.CancellationError, function( e ){
-			r.abort();
 
-			throw e;
-		});
+		onCancel(function() {
+            r.abort();
+        });
+	});
 }
 
 function querify( data ){
