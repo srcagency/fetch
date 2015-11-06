@@ -4,9 +4,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"main": "src",
-	"browser": {
-		"./src/index.js": "./src/browser.js"
-	},
+	"browser": "./src/browser.js",
 	"dependencies": {
 		"bluebird": "^3.0.5",
 		"request": "^2.65.0",
