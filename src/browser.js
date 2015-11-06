@@ -75,8 +75,8 @@ function xhr( verb, url, query, headers ){
 		r.send(!isWithoutBody && query && JSON.stringify(query));
 
 		onCancel(function() {
-            r.abort();
-        });
+			r.abort();
+		});
 	});
 }
 
