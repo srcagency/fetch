@@ -20,7 +20,7 @@ module.exports = xhr;
 var withoutBody = [ 'GET', 'DELETE' ];
 
 function xhr( verb, url, query, headers ){
-	return new Promise(function( rs, rj, onCancel ){
+	return new Promise(function( rs, rj ){
 		var r = new XMLHttpRequest();
 
 		var isWithoutBody = ~withoutBody.indexOf(verb);
@@ -73,10 +73,6 @@ function xhr( verb, url, query, headers ){
 			});
 
 		r.send(!isWithoutBody && query && JSON.stringify(query));
-
-		onCancel(function() {
-			r.abort();
-		});
 	});
 }
 
