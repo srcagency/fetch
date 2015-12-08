@@ -3,6 +3,7 @@
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 
+var addQuery = require('./add-query');
 var responses = require('./responses');
 
 xhr.response = responses;
@@ -20,12 +21,13 @@ var withoutBody = [ 'GET', 'DELETE' ];
 module.exports = xhr;
 
 function xhr( verb, url, query, headers ){
+	var isWithoutBody = ~withoutBody.indexOf(verb);
+
 	return request({
 		method: verb,
-		url: url,
-		qs: ~withoutBody.indexOf(verb) && query,
+		url: isWithoutBody ? addQuery(url, query) : url,
 		headers: headers,
-		body: !~withoutBody.indexOf(verb) && query || undefined,
+		body: !isWithoutBody && query,
 		gzip: true,
 		json: true,
 	})

@@ -1,8 +1,8 @@
 'use strict';
 
 var Promise = require('bluebird');
-var serialize = require('qs/lib/stringify');
 
+var addQuery = require('./add-query');
 var responses = require('./responses');
 
 xhr.response = responses;
@@ -25,7 +25,7 @@ function xhr( verb, url, query, headers ){
 
 		var isWithoutBody = ~withoutBody.indexOf(verb);
 
-		r.open(verb, url + querify(isWithoutBody && query));
+		r.open(verb, isWithoutBody ? addQuery(url, query) : url);
 
 		r.addEventListener('readystatechange', function(){
 			if (r.readyState !== 4)
@@ -74,10 +74,4 @@ function xhr( verb, url, query, headers ){
 
 		r.send(!isWithoutBody && query && JSON.stringify(query));
 	});
-}
-
-function querify( data ){
-	return data
-		? '?' + serialize(data)
-		: '';
 }
