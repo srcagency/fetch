@@ -6,8 +6,8 @@
 	"main": "src",
 	"browser": "./src/browser.js",
 	"dependencies": {
-		"bluebird": "^3.0.5",
-		"request": "^2.65.0",
+		"bluebird": "^3.0.6",
+		"request": "^2.67.0",
 		"querystringparser": "^0.1.1"
 	},
 	"license": "MIT"
