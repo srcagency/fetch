@@ -1,9 +1,12 @@
 'use strict';
 
 var Promise = require('bluebird');
+var find = require('array-find');
 
 var addQuery = require('./add-query');
 var responses = require('./responses');
+var isContentType = require('./is-content-type');
+var serialize = require('./serialize');
 
 xhr.response = responses;
 
@@ -24,6 +27,11 @@ function xhr( verb, url, query, headers ){
 		var r = new XMLHttpRequest();
 
 		var isWithoutBody = ~withoutBody.indexOf(verb);
+
+		var contentTypeHeader = headers && find(Object.keys(headers), isContentType);
+
+		var urlencoded = contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
+		var json = contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true;
 
 		r.open(verb, isWithoutBody ? addQuery(url, query) : url);
 
@@ -64,14 +72,19 @@ function xhr( verb, url, query, headers ){
 				rj(response);
 		});
 
-		if (!~withoutBody.indexOf(verb) && query)
-			r.setRequestHeader('Content-Type', 'application/json');
-
 		if (headers)
 			Object.keys(headers).forEach(function( key ){
 				r.setRequestHeader(key, headers[key]);
 			});
 
-		r.send(!isWithoutBody && query && JSON.stringify(query));
+		if (!isWithoutBody && query) {
+			if (json)
+				r.setRequestHeader('Content-Type', 'application/json');
+
+			r.send((json && JSON.stringify(query)) || (urlencoded && serialize(query)) || query);
+		} else {
+			r.send();
+		}
+
 	});
 }

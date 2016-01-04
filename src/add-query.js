@@ -1,6 +1,6 @@
 'use strict';
 
-var Serializer = require('querystringparser/js/querystringserializer');
+var serialize = require('./serialize');
 
 module.exports = addQuery;
 
@@ -12,10 +12,4 @@ function addQuery( url, data ){
 		return url+'?'+serialize(data);
 
 	return url+'&'+serialize(data);
-}
-
-function serialize( data ){
-	var serializer = new Serializer();
-
-	return serializer.serialize(data);
 }

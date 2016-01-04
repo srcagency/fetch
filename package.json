@@ -6,6 +6,7 @@
 	"main": "src",
 	"browser": "./src/browser.js",
 	"dependencies": {
+		"array-find": "^1.0.0",
 		"bluebird": "^3.0.6",
 		"request": "^2.67.0",
 		"querystringparser": "^0.1.1"
