@@ -30,8 +30,9 @@ function xhr( verb, url, query, headers ){
 
 		var contentTypeHeader = headers && find(Object.keys(headers), isContentType);
 
-		var urlencoded = contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
-		var json = contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true;
+		var formdata = window.FormData && query instanceof FormData;
+		var urlencoded = !formdata && contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
+		var json = !formdata && (contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true);
 
 		r.open(verb, isWithoutBody ? addQuery(url, query) : url);
 
@@ -81,7 +82,14 @@ function xhr( verb, url, query, headers ){
 			if (json)
 				r.setRequestHeader('Content-Type', 'application/json');
 
-			r.send((json && JSON.stringify(query)) || (urlencoded && serialize(query)) || query);
+			if (json)
+				r.send(JSON.stringify(query))
+			else if (formdata)
+				r.send(query);
+			else if (urlencoded)
+				r.send(serialize(query));
+			else
+				r.send(query);
 		} else {
 			r.send();
 		}
