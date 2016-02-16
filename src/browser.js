@@ -30,7 +30,7 @@ function xhr( verb, url, query, headers ){
 
 		var contentTypeHeader = headers && find(Object.keys(headers), isContentType);
 
-		var formdata = window.FormData && query instanceof FormData;
+		var formdata = (window.FormData && query instanceof FormData) || (window.File && query instanceof File);
 		var urlencoded = !formdata && contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
 		var json = !formdata && (contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true);
 
