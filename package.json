@@ -2,7 +2,7 @@
 	"name": "fetch-one",
 	"description": "Opinionated one-function http request for Node.js and Browserify",
 	"repository": "srcagency/fetch-one",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"main": "src",
 	"browser": "./src/browser.js",
 	"dependencies": {
