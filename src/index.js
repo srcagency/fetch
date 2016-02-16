@@ -1,8 +1,9 @@
 'use strict';
 
 var Promise = require('bluebird');
-var request = Promise.promisify(require('request'));
+var request = require('request');
 var find = require('array-find');
+var isStream = require('is-stream');
 
 var addQuery = require('./add-query');
 var responses = require('./responses');
@@ -29,6 +30,8 @@ function xhr( verb, url, query, headers ){
 
 	var contentTypeHeader = headers && find(Object.keys(headers), isContentType);
 
+	var streaming = isStream(query);
+
 	var urlencoded = contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
 	var json = contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true;
 
@@ -40,14 +43,32 @@ function xhr( verb, url, query, headers ){
 		headers.accept = 'application/json';
 	}
 
-	return request({
+	var resolve;
+	var reject;
+
+	var promise = new Promise(function( rs, rj ){
+		resolve = rs;
+		reject = rj;
+	});
+
+	var r = request({
 		method: verb,
 		url: isWithoutBody ? addQuery(url, query) : url,
 		headers: headers,
-		body: !isWithoutBody && ((json && query) || (urlencoded && serialize(query)) || query),
+		body: !isWithoutBody && !streaming && ((json && query) || (urlencoded && serialize(query)) || query),
 		gzip: true,
 		json: json,
-	})
+	}, function( err, response ){
+		if (err)
+			reject(err);
+		else
+			resolve(response);
+	});
+
+	if (streaming)
+		query.pipe(r);
+
+	return promise
 		.then(function( httpResponse ){
 			var code = httpResponse.statusCode;
 			var statusIdentifier = code && (code / 100 | 0);
