@@ -6,6 +6,7 @@ var find = require('array-find');
 var addQuery = require('./add-query');
 var responses = require('./responses');
 var isContentType = require('./is-content-type');
+var isAccept = require('./is-accept');
 var serialize = require('./serialize');
 
 xhr.response = responses;
@@ -33,6 +34,14 @@ function xhr( verb, url, query, headers ){
 		var formdata = (window.FormData && query instanceof FormData) || (window.File && query instanceof File);
 		var urlencoded = !formdata && contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
 		var json = !formdata && (contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true);
+
+		if (!headers) {
+			headers = {
+				accept: 'application/json',
+			};
+		} else if (!find(Object.keys(headers), isAccept)) {
+			headers.accept = 'application/json';
+		}
 
 		r.open(verb, isWithoutBody ? addQuery(url, query) : url);
 
@@ -73,10 +82,9 @@ function xhr( verb, url, query, headers ){
 				rj(response);
 		});
 
-		if (headers)
-			Object.keys(headers).forEach(function( key ){
-				r.setRequestHeader(key, headers[key]);
-			});
+		Object.keys(headers).forEach(function( key ){
+			r.setRequestHeader(key, headers[key]);
+		});
 
 		if (!isWithoutBody && query) {
 			if (json)

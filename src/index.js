@@ -7,6 +7,7 @@ var find = require('array-find');
 var addQuery = require('./add-query');
 var responses = require('./responses');
 var isContentType = require('./is-content-type');
+var isAccept = require('./is-accept');
 var serialize = require('./serialize');
 
 xhr.response = responses;
@@ -30,6 +31,14 @@ function xhr( verb, url, query, headers ){
 
 	var urlencoded = contentTypeHeader && headers[contentTypeHeader].indexOf('urlencoded') !== -1;
 	var json = contentTypeHeader ? headers[contentTypeHeader].indexOf('json') !== -1 : true;
+
+	if (!headers) {
+		headers = {
+			accept: 'application/json',
+		};
+	} else if (!find(Object.keys(headers), isAccept)) {
+		headers.accept = 'application/json';
+	}
 
 	return request({
 		method: verb,
