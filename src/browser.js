@@ -93,6 +93,5 @@ function xhr( verb, url, query, headers ){
 		} else {
 			r.send();
 		}
-
 	});
 }
