@@ -55,7 +55,7 @@ function xhr( verb, url, query, headers ){
 		method: verb,
 		url: isWithoutBody ? addQuery(url, query) : url,
 		headers: headers,
-		body: !isWithoutBody && !streaming && ((json && query) || (urlencoded && serialize(query)) || query),
+		body: !isWithoutBody && !streaming && ((json && query) || (urlencoded && serialize(query)) || query) || undefined,
 		gzip: true,
 		json: json,
 	}, function( err, response ){
