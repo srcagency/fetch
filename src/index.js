@@ -12,6 +12,7 @@ var isAccept = require('./is-accept');
 var serialize = require('./serialize');
 
 xhr.response = responses;
+xhr.serialize = serialize;
 
 var responseMap = {
 	1: responses.Error,
